@@ -29,6 +29,13 @@ RUN pip3 install --no-cache-dir torch torchvision torchaudio --index-url https:/
     && pip3 install --no-cache-dir xformers==0.0.21 \
     && pip3 install -r requirements.txt
 
+# Install nudenet nudity detector
+# see: https://github.com/notAI-tech/NudeNet/tree/v3
+RUN pip3 install --upgrade nudenet
+
+# Install runpod
+RUN pip3 install runpod requests
+
 # Download the models
 RUN wget -O models/checkpoints/sd_xl_base_1.0.safetensors https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors
 RUN wget -O models/vae/sdxl_vae.safetensors https://huggingface.co/stabilityai/sdxl-vae/resolve/main/sdxl_vae.safetensors
@@ -44,9 +51,6 @@ RUN for dir in /comfyui/custom_nodes/*/; do \
         pip3 install --no-cache-dir -r "$dir/requirements.txt"; \
     fi; \
 done
-
-# Install runpod
-RUN pip3 install runpod requests
 
 # Go back to the root
 WORKDIR /

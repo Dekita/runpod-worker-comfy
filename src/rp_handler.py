@@ -8,6 +8,10 @@ import os
 import requests
 import base64
 
+# import nudenet lib: (nudity detection)
+# see: https://github.com/notAI-tech/NudeNet/tree/v3
+from nudenet import NudeDetector
+
 
 # Time to wait between API check attempts in milliseconds
 COMFY_API_AVAILABLE_INTERVAL_MS = 50
@@ -135,6 +139,15 @@ def base64_encode(img_file):
         return encoded_string.decode("utf-8")
     
 
+def detect_nudity(img_file):
+    """
+    Returns:
+    list: of detected nudity for img_file if able
+    """
+    log(f"scanning nudity for {img_file}")
+    return NudeDetector().detect(img_file) 
+
+
 def handler(job):
     """
     The main function that handles a job of generating an image.
@@ -230,6 +243,9 @@ def handler(job):
         aws_uploaded = "simulated_uploaded/" not in image_url
         # setup base return object structure
         job_output["url"] = image_url
+        # check generated image for nudity if flag set
+        if job_prop_to_bool(job_input, "return-nsfw"):
+            job_output["nsfw"] = detect_nudity(local_image_path)
         # convert generated image to base64 if not uploaded to aws and able
         if not aws_uploaded and job_prop_to_bool(job_input, "return-b64"):
             job_output["base64"] = base64_encode(local_image_path)
