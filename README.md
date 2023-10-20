@@ -1,3 +1,7 @@
+## NOTE:
+This fork currently has breaking changes compared to the official repo :heart:
+(most notibly, 'workflow' replacing 'prompt', and base64 is no longer returned automatically (now needs additional flag set on request))
+
 # runpod-worker-comfy
 
 > [ComfyUI](https://github.com/comfyanonymous/ComfyUI) as a serverless API on [RunPod](https://www.runpod.io/)
